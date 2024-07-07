@@ -81,15 +81,22 @@ def filter_by_states(
     # Filter the states GeoDataFrame to include only the specified states
     selected_states_gdf = states_gdf[states_gdf["STUSPS"].isin(state_names)]
 
-    # Ensure both GeoDataFrames use the same coordinate reference system (CRS)
-    geodataframe = geodataframe.to_crs(selected_states_gdf.crs)
+    return filter_by_regions_gdf(geodataframe, selected_states_gdf)
 
-    # Perform spatial join to find urban areas that intersect with the selected states
-    filtered_urban_areas_gdf = gpd.sjoin(
-        geodataframe, selected_states_gdf, how="inner", predicate="intersects"
+
+def filter_by_regions_gdf(
+    geodataframe: gpd.GeoDataFrame, filter_regions_gdf: gpd.GeoDataFrame
+) -> gpd.GeoDataFrame:
+    """
+    Filters the geodataframe with filter regions. Regions touching the filter-regions are included.
+
+    Parameters
+    geodataframe (GeoDataFrame): GeoDataFrame to be filtered.
+    filter_regions_gdf (GeoDataFrame): GeoDataFrame with regions as filters.
+    """
+
+    filter_regions_gdf = filter_regions_gdf.to_crs(geodataframe.crs)
+    filtered_gdf = gpd.sjoin(
+        geodataframe, filter_regions_gdf, how="inner", predicate="intersects"
     )
-
-    # Drop the additional state columns added during the spatial join
-    filtered_urban_areas_gdf = filtered_urban_areas_gdf.drop(columns=["index_right"])
-
-    return filtered_urban_areas_gdf
+    return filtered_gdf.drop(columns=["index_right"])
