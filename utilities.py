@@ -16,44 +16,44 @@ def get_state_abbreviations_from_region(region_names: str | List[str]) -> List[s
         region_names = [region_names]
 
     regions: dict[str, dict[str, list[str]]] = {
-        "Northeast": {
-            "New England": ["CT", "ME", "MA", "NH", "RI", "VT"],
-            "Mid-Atlantic": ["NJ", "NY", "PA"],
+        "northeast": {
+            "new england": ["CT", "ME", "MA", "NH", "RI", "VT"],
+            "mid-atlantic": ["NJ", "NY", "PA"],
         },
-        "Midwest": {
-            "East North Central": ["IL", "IN", "MI", "OH", "WI"],
-            "West North Central": ["IA", "KS", "MN", "MO", "NE", "ND", "SD"],
-            "Upper Midwest": ["MN", "WI", "IA", "ND", "SD"],
+        "midwest": {
+            "east north central": ["IL", "IN", "MI", "OH", "WI"],
+            "west north central": ["IA", "KS", "MN", "MO", "NE", "ND", "SD"],
+            "upper midwest": ["MN", "WI", "IA", "ND", "SD"],
         },
         "South": {
-            "South Atlantic": ["DE", "FL", "GA", "MD", "NC", "SC", "VA", "DC", "WV"],
-            "East South Central": ["AL", "KY", "MS", "TN"],
-            "West South Central": ["AR", "LA", "OK", "TX"],
-            "Deep South": ["AL", "GA", "LA", "MS", "SC"],
+            "south atlantic": ["DE", "FL", "GA", "MD", "NC", "SC", "VA", "DC", "WV"],
+            "east south central": ["AL", "KY", "MS", "TN"],
+            "west south central": ["AR", "LA", "OK", "TX"],
+            "deep south": ["AL", "GA", "LA", "MS", "SC"],
         },
-        "West": {
-            "Mountain": ["AZ", "CO", "ID", "MT", "NV", "NM", "UT", "WY"],
-            "Pacific": ["AK", "CA", "HI", "OR", "WA"],
-            "Pacific Northwest": ["OR", "WA", "ID"],
-            "Southwest": ["AZ", "NM", "OK", "TX"],
+        "west": {
+            "mountain": ["AZ", "CO", "ID", "MT", "NV", "NM", "UT", "WY"],
+            "pacific": ["AK", "CA", "HI", "OR", "WA"],
+            "pacific northwest": ["OR", "WA", "ID"],
+            "southwest": ["AZ", "NM", "OK", "TX"],
         },
     }
 
     result: Set[str] = set()
 
     for region_name in region_names:
-        if region_name in regions:
+        if region_name.lower() in regions:
             result = result.union(
                 [
                     abbr
-                    for subregion in regions[region_name]
-                    for abbr in regions[region_name][subregion]
+                    for subregion in regions[region_name.lower()]
+                    for abbr in regions[region_name.lower()][subregion]
                 ]
             )
 
         for main_region in regions.values():
-            if region_name in main_region:
-                result = result.union(main_region[region_name])
+            if region_name.lower() in main_region:
+                result = result.union(main_region[region_name.lower()])
 
     return list(result)
 
